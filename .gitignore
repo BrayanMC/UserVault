@@ -1,0 +1,64 @@
+# Claude Code
+.claude/
+
+# Docs (prompts, specs)
+docs/
+
+# XcodeGen (generated project)
+*.xcodeproj
+
+# Xcode
+DerivedData/
+build/
+*.moved-aside
+xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+.swiftpm/
+*.resolved
+*.xcworkspace/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+*.swp
+*.swo
+
+# Secrets
+*.env
+Secrets.swift
+secrets.xcconfig
+UserVault/Resources/Firebase/
+ExportOptions.plist
+
+# Fastlane outputs
+fastlane/README.md
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+fastlane/xcov_output/
+fastlane/build_output/
+fastlane/maestro_output/
+
+# Ruby
+Gemfile.lock
+vendor/
+.bundle/
+
+# Testing y cobertura
+*.gcda
+*.gcno
+coverage/
+
+# Distribución
+*.ipa
+*.dSYM.zip
+*.dSYM

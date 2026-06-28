@@ -1,0 +1,77 @@
+name: UserVault
+options:
+  bundleIdPrefix: com.brayanmunoz
+  deploymentTarget:
+    iOS: "15.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+
+packages:
+  Realm:
+    url: https://github.com/realm/realm-swift
+    from: "20.0.0"
+  Alamofire:
+    url: https://github.com/Alamofire/Alamofire
+    from: "5.0.0"
+
+targets:
+  UserVault:
+    type: application
+    platform: iOS
+    sources:
+      - UserVault
+    resources:
+      - path: UserVault/Resources
+        excludes:
+          - "**/.gitkeep"
+    settings:
+      base:
+        INFOPLIST_FILE: UserVault/Resources/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.brayanmunoz.UserVault
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: false
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
+    preBuildScripts:
+      - script: |
+          if which swiftlint > /dev/null; then
+            swiftlint
+          else
+            echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+          fi
+        name: SwiftLint
+        basedOnDependencyAnalysis: false
+    postBuildScripts:
+      - script: |
+          FRAMEWORKS_DIR="${BUILT_PRODUCTS_DIR}/PackageFrameworks"
+          DEST="${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}"
+          if [ -d "$FRAMEWORKS_DIR" ]; then
+            mkdir -p "$DEST"
+            find "$FRAMEWORKS_DIR" -name "*.framework" | while read -r fw; do
+              cp -R "$fw" "$DEST/"
+              FW_NAME=$(basename "$fw" .framework)
+              codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" --preserve-metadata=identifier,entitlements --timestamp=none "$DEST/$(basename "$fw")/$FW_NAME"
+            done
+          fi
+        name: Embed SPM Frameworks
+        basedOnDependencyAnalysis: false
+    dependencies:
+      - package: Realm
+        product: RealmSwift
+      - package: Alamofire
+  UserVaultTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - UserVaultTests
+    dependencies:
+      - target: UserVault
