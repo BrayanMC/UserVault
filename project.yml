@@ -73,5 +73,8 @@ targets:
     platform: iOS
     sources:
       - UserVaultTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: true
     dependencies:
       - target: UserVault
